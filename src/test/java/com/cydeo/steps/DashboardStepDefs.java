@@ -3,8 +3,11 @@ package com.cydeo.steps;
 import com.cydeo.pages.DashBoardPage;
 import com.cydeo.pages.LoginPage;
 import com.cydeo.utility.BrowserUtil;
+import com.cydeo.utility.DB_Util;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.Assert;
 
 public class DashboardStepDefs
 {
@@ -30,6 +33,66 @@ public class DashboardStepDefs
         actualBorrowedBookNumbers = dashBoardPage.borrowedBooksNumber.getText();
         System.out.println("actualBorrowedBookNumbers = " + actualBorrowedBookNumbers);
 
+    }
+
+    @Then("the informations should be same with database")
+    public void the_informations_should_be_same_with_database() {
+
+        // 1. Make a conn
+        // 2. Run Query
+        // 3. Store data
+        // 4. Make an assertion
+        // 5. Close conn
+
+        // 1. Make a conn
+    //    DB_Util.createConnection();
+
+
+        // USERS
+
+        // 2. Run Query
+        DB_Util.runQuery("select count(*) from users");
+
+        // 3. Store data
+        // extected result from UI
+        String expectedUsers=DB_Util.getFirstRowFirstColumn();
+
+        // 4. Make an assertion
+        Assert.assertEquals(expectedUsers,actualUserNumbers);
+
+
+        // BOOKS
+        // 2. Run Query
+       DB_Util.runQuery("select count(*) from books");
+
+        // 3. Store data
+        String expectedBooks=DB_Util.getFirstRowFirstColumn();
+
+        //4. Make an assertion
+        Assert.assertEquals(expectedBooks,actualBookNumbers);
+
+
+
+
+
+        // BORROWED BOOKS
+
+        // 2. Run Query
+        DB_Util.runQuery("select count(*)from book_borrow\n" +
+                "where is_returned=0");
+        // 3. Store data
+        String expectedBorrowBooks=DB_Util.getFirstRowFirstColumn();
+
+        // 4. Make an assertion
+
+        Assert.assertEquals(expectedBorrowBooks,actualBorrowedBookNumbers);
+
+
+
+
+
+        // 5. Close conn, close data based
+        DB_Util.destroy();
     }
 
 
